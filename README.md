@@ -53,6 +53,7 @@ Preprocessing options are set in `src/pdf_to_audio/templates/config/runtime.loca
 | `skip_footnotes` | `true` | Remove footnote markers and footnote text |
 | `skip_bibliography` | `true` | Remove the bibliography/references section |
 | `skip_parenthetical_citations` | `true` | Remove parenthetical citations |
+| `skip_image_descriptions` | `true` | Remove parenthetical citations |
 
 Infrastructure settings are overridden via environment variables (see `.env.example`):
 

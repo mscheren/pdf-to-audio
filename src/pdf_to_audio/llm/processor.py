@@ -36,6 +36,7 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
         skip_footnotes=options.skip_footnotes,
         skip_bibliography=options.skip_bibliography,
         skip_parenthetical_citations=options.skip_parenthetical_citations,
+        skip_image_descriptions=options.skip_image_descriptions,
     )
 
     cleaned_chunks: list[str] = []

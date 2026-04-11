@@ -17,6 +17,7 @@ class Settings:
     skip_footnotes: bool
     skip_bibliography: bool
     skip_parenthetical_citations: bool
+    skip_image_descriptions: bool
     pdf_base_dir: str
     texts_base_dir: str
     texts_processed_base_dir: str
@@ -41,6 +42,7 @@ def load_settings() -> Settings:
         skip_footnotes=bool(runtime["skip_footnotes"]),
         skip_bibliography=bool(runtime["skip_bibliography"]),
         skip_parenthetical_citations=bool(runtime["skip_parenthetical_citations"]),
+        skip_image_descriptions=bool(runtime["skip_image_descriptions"]),
         pdf_base_dir=str(os.environ.get("PDF_BASE_DIR", defaults["pdf_base_dir"])),
         texts_base_dir=str(os.environ.get("TEXTS_BASE_DIR", defaults["texts_base_dir"])),
         texts_processed_base_dir=str(

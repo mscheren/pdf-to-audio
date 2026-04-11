@@ -15,6 +15,7 @@ class PreprocessingOptions:
     skip_footnotes: bool = field(default=False)
     skip_bibliography: bool = field(default=False)
     skip_parenthetical_citations: bool = field(default=False)
+    skip_image_descriptions: bool = field(default=False)
 
 
 def resolve_steps(step_name: str | None) -> list[PipelineStep]:

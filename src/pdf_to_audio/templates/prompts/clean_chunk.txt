@@ -16,10 +16,6 @@ Rules:
 - Normalize whitespace: collapse multiple blank lines to one, remove trailing spaces.
 - Do not add any text that was not in the input.
 - Never add truncation notices, summaries, or continuation markers of any kind.
-{% if skip_parenthetical_citations %}
-- Remove all parenthetical or in-text citations, e. g. "(35 Bände, Paris 1751-80)",
-  "(1932: 263-312)" or "(Elias 1936: Bd. 1, 1-64: Zur Soziogenese der Begriffe „Zivilisation“ und „Kultur“)".
-{% endif %}
 {% if skip_footnotes %}
 - Remove all footnotes: both the superscript markers in the body text and the footnote
   text collected at the bottom of pages.
@@ -27,4 +23,12 @@ Rules:
 {% if skip_bibliography %}
 - Remove the bibliography/references section entirely (typically titled "Literatur",
   "Literaturverzeichnis", "Quellen", or "References").
+{% endif %}
+{% if skip_parenthetical_citations %}
+- Remove all parenthetical or in-text citations, e. g. "(35 Bände, Paris 1751-80)",
+  "(1932: 263-312)" or "(Elias 1936: Bd. 1, 1-64: Zur Soziogenese der Begriffe „Zivilisation“ und „Kultur“)".
+{% endif %}
+{% if skip_image_descriptions %}
+- Remove all image descriptions and references, e. g. "Abb. 2.1: Kopf des Sophokles" or
+  "2 der 18 (von 28) erhaltenen Schnitztafeln aus dem Holzportal der Kirche S. Sabina, je ca. 80 x ca. 33 cm, Rom, 5. Jh., nach Jeremias 1980: Abb. 34, 60".
 {% endif %}

@@ -37,6 +37,7 @@ def main() -> None:
         skip_footnotes=settings.skip_footnotes,
         skip_bibliography=settings.skip_bibliography,
         skip_parenthetical_citations=settings.skip_parenthetical_citations,
+        skip_image_descriptions=settings.skip_image_descriptions,
     )
 
     steps = resolve_steps(args.command if args.command != "run" else None)
