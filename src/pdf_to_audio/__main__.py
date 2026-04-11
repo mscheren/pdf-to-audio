@@ -36,6 +36,7 @@ def main() -> None:
     options = PreprocessingOptions(
         skip_footnotes=settings.skip_footnotes,
         skip_bibliography=settings.skip_bibliography,
+        skip_parenthetical_citations=settings.skip_parenthetical_citations,
     )
 
     steps = resolve_steps(args.command if args.command != "run" else None)

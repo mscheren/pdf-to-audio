@@ -1,4 +1,5 @@
 {
     "skip_footnotes": true,
-    "skip_bibliography": true
+    "skip_bibliography": true,
+    "skip_parenthetical_citations": true
 }

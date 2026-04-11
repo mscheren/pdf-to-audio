@@ -1,9 +1,8 @@
 {
-    "azure_deployment_name": "exp-gpt-4.1",
-    "azure_api_version": "2024-12-01-preview",
-    "tts_voice": "de-DE-KatjaNeural",
+    "azure_deployment_name": "",
+    "azure_api_version": "",
+    "tts_voice": "",
     "chunk_token_limit": 4000,
-    "llm_max_output_tokens": 32768,
     "pdf_base_dir": "pdf",
     "texts_base_dir": "texts",
     "texts_processed_base_dir": "texts_processed",
@@ -11,6 +10,6 @@
     "tts_max_retries": 3,
     "tts_retry_delay_seconds": 5,
     "hash_block_min_length": 40,
-    "watermark_marker": "Urheberrechtlich geschützt",
+    "watermark_marker": "",
     "fffd_length_threshold": 100
 }

@@ -34,6 +34,8 @@ uv run pdf-to-audio run pdf/folder/file.pdf
 uv run pdf-to-audio runpdf/folder/
 ```
 
+**Important:** Only works with relative path.
+
 ### Run individual steps
 
 ```bash
@@ -44,12 +46,13 @@ uv run pdf-to-audi tts texts_processed/folder/file.txt
 
 ## Configuration
 
-Preprocessing options are set in `src/pdf_to_audio/templates/config/runtime.json`:
+Preprocessing options are set in `src/pdf_to_audio/templates/config/runtime.local.json`:
 
 | Key | Default | Effect |
 | --- | --- | --- |
-| `skip_footnotes` | `false` | Remove footnote markers and footnote text |
-| `skip_bibliography` | `false` | Remove the bibliography/references section |
+| `skip_footnotes` | `true` | Remove footnote markers and footnote text |
+| `skip_bibliography` | `true` | Remove the bibliography/references section |
+| `skip_parenthetical_citations` | `true` | Remove parenthetical citations |
 
 Infrastructure settings are overridden via environment variables (see `.env.example`):
 
@@ -60,8 +63,7 @@ Infrastructure settings are overridden via environment variables (see `.env.exam
 | `AZURE_DEPLOYMENT_NAME` | `exp-gpt-4.1` | Model deployment name |
 | `AZURE_OPENAI_API_VERSION` | `2024-12-01-preview` | API version |
 | `TTS_VOICE` | `de-DE-KatjaNeural` | Edge TTS voice |
-| `CHUNK_TOKEN_LIMIT` | `24000` | Max input tokens per LLM chunk |
-| `LLM_MAX_OUTPUT_TOKENS` | `32768` | Max output tokens per LLM call |
+| `CHUNK_TOKEN_LIMIT` | `4000` | Max input tokens per LLM chunk |
 | `PDF_BASE_DIR` | `pdf` | Input PDF base directory |
 | `TEXTS_BASE_DIR` | `texts` | Extracted text output directory |
 | `TEXTS_PROCESSED_BASE_DIR` | `texts_processed` | Cleaned text output directory |

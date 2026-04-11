@@ -1,4 +1,4 @@
-"""Application settings loaded from defaults.json, runtime.json, and environment variables."""
+"""Application settings loaded from defaults.local.json, runtime.local.json, and environment variables."""
 
 import os
 from dataclasses import dataclass
@@ -14,9 +14,9 @@ class Settings:
     azure_api_version: str
     tts_voice: str
     chunk_token_limit: int
-    llm_max_output_tokens: int
     skip_footnotes: bool
     skip_bibliography: bool
+    skip_parenthetical_citations: bool
     pdf_base_dir: str
     texts_base_dir: str
     texts_processed_base_dir: str
@@ -29,18 +29,18 @@ class Settings:
 
 
 def load_settings() -> Settings:
-    """Load settings from defaults.json and runtime.json, with env var overrides for infrastructure settings."""
+    """Load settings from defaults.local.json and runtime.local.json, with env var overrides for infrastructure settings."""
     load_dotenv()
-    defaults = template_loader.load_json_config("defaults")
-    runtime = template_loader.load_json_config("runtime")
+    defaults = template_loader.load_json_config("defaults.local")
+    runtime = template_loader.load_json_config("runtime.local")
     return Settings(
         azure_deployment_name=str(os.environ.get("AZURE_DEPLOYMENT_NAME", defaults["azure_deployment_name"])),
         azure_api_version=str(os.environ.get("AZURE_OPENAI_API_VERSION", defaults["azure_api_version"])),
         tts_voice=str(os.environ.get("TTS_VOICE", defaults["tts_voice"])),
         chunk_token_limit=int(os.environ.get("CHUNK_TOKEN_LIMIT", str(defaults["chunk_token_limit"]))),
-        llm_max_output_tokens=int(os.environ.get("LLM_MAX_OUTPUT_TOKENS", str(defaults["llm_max_output_tokens"]))),
         skip_footnotes=bool(runtime["skip_footnotes"]),
         skip_bibliography=bool(runtime["skip_bibliography"]),
+        skip_parenthetical_citations=bool(runtime["skip_parenthetical_citations"]),
         pdf_base_dir=str(os.environ.get("PDF_BASE_DIR", defaults["pdf_base_dir"])),
         texts_base_dir=str(os.environ.get("TEXTS_BASE_DIR", defaults["texts_base_dir"])),
         texts_processed_base_dir=str(

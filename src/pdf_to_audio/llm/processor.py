@@ -21,7 +21,7 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
 
     Args:
         text: Raw extracted text from the PDF.
-        options: Preprocessing flags (skip_footnotes, skip_bibliography).
+        options: Preprocessing flags.
         client: Configured AzureOpenAI client.
         settings: Application settings.
 
@@ -35,6 +35,7 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
     system_prompt = prompt_template.render(
         skip_footnotes=options.skip_footnotes,
         skip_bibliography=options.skip_bibliography,
+        skip_parenthetical_citations=options.skip_parenthetical_citations,
     )
 
     cleaned_chunks: list[str] = []
@@ -49,10 +50,11 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
                 {"role": "user", "content": chunk},
             ],
             temperature=0,
-            max_tokens=settings.llm_max_output_tokens,
         )
 
         cleaned = str(response.choices[0].message.content)
+        chunk_start = chunk[:50].replace("\n", " ")
+        cleaned_start = cleaned[:50].replace("\n", " ")
         usage = response.usage
         if usage:
             logger.info(
@@ -61,6 +63,11 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
                 len(chunks),
                 usage.prompt_tokens,
                 usage.completion_tokens,
+            )
+            logger.info(
+                "Beginning of chunk: '%s', cleaned to: '%s'",
+                chunk_start,
+                cleaned_start,
             )
 
         cleaned_chunks.append(cleaned)

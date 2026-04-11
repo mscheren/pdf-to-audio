@@ -17,3 +17,6 @@ pdf/
 texts/
 texts_processed/
 audio/
+
+# Local config
+*.local.json
