@@ -31,7 +31,7 @@ pdf/folder/file.pdf
 
 ```bash
 uv run pdf-to-audio run pdf/folder/file.pdf
-uv run pdf-to-audio runpdf/folder/
+uv run pdf-to-audio run pdf/folder/
 ```
 
 **Important:** Only works with relative path.

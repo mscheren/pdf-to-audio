@@ -5,6 +5,7 @@ description = "Convert PDF files to audio via text extraction, LLM cleaning, and
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "better-profanity>=0.7.0",
     "edge-tts>=7.2.8",
     "jinja2>=3.1.0",
     "openai>=2.30.0",

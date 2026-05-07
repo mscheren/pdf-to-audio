@@ -2,10 +2,11 @@
 
 import logging
 
-from openai import AzureOpenAI
+from openai import AzureOpenAI, BadRequestError
 
 from pdf_to_audio.config.settings import Settings
 from pdf_to_audio.llm.chunker import split_into_chunks
+from pdf_to_audio.llm.content_guard import sanitize
 from pdf_to_audio.pipeline.steps import PreprocessingOptions
 from pdf_to_audio.templates.template_loader import template_loader
 
@@ -44,14 +45,31 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
     for index, chunk in enumerate(chunks):
         logger.debug("Processing chunk %d/%d", index + 1, len(chunks))
 
-        response = client.chat.completions.create(
-            model=settings.azure_deployment_name,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": chunk},
-            ],
-            temperature=0,
-        )
+        try:
+            response = client.chat.completions.create(
+                model=settings.azure_deployment_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": chunk},
+                ],
+                temperature=0,
+            )
+        except BadRequestError as exc:
+            if exc.code != "content_filter":
+                raise
+            logger.warning(
+                "Chunk %d/%d triggered content filter, retrying with sanitized text",
+                index + 1,
+                len(chunks),
+            )
+            response = client.chat.completions.create(
+                model=settings.azure_deployment_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": sanitize(chunk)},
+                ],
+                temperature=0,
+            )
 
         cleaned = str(response.choices[0].message.content)
         chunk_start = chunk[:50].replace("\n", " ")
