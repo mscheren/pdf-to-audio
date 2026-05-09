@@ -2,18 +2,19 @@
 
 import logging
 
-from openai import AzureOpenAI, BadRequestError
+from openai import APIError, BadRequestError, OpenAI
 
 from pdf_to_audio.config.settings import Settings
 from pdf_to_audio.llm.chunker import split_into_chunks
 from pdf_to_audio.llm.content_guard import sanitize
+from pdf_to_audio.llm.exceptions import LLMError
 from pdf_to_audio.pipeline.steps import PreprocessingOptions
 from pdf_to_audio.templates.template_loader import template_loader
 
 logger = logging.getLogger(__name__)
 
 
-def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, settings: Settings) -> str:
+def process_text(text: str, options: PreprocessingOptions, client: OpenAI, settings: Settings) -> str:
     """Clean and reformat extracted PDF text using an LLM with chunked processing.
 
     Splits the input text into chunks at paragraph boundaries and processes each
@@ -23,7 +24,7 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
     Args:
         text: Raw extracted text from the PDF.
         options: Preprocessing flags.
-        client: Configured AzureOpenAI client.
+        client: Configured LLM client.
         settings: Application settings.
 
     Returns:
@@ -47,7 +48,7 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
 
         try:
             response = client.chat.completions.create(
-                model=settings.azure_deployment_name,
+                model=settings.model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": chunk},
@@ -56,20 +57,27 @@ def process_text(text: str, options: PreprocessingOptions, client: AzureOpenAI, 
             )
         except BadRequestError as exc:
             if exc.code != "content_filter":
-                raise
+                raise LLMError(f"LLM request failed for chunk {index + 1}/{len(chunks)}") from exc
             logger.warning(
                 "Chunk %d/%d triggered content filter, retrying with sanitized text",
                 index + 1,
                 len(chunks),
             )
-            response = client.chat.completions.create(
-                model=settings.azure_deployment_name,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": sanitize(chunk)},
-                ],
-                temperature=0,
-            )
+            try:
+                response = client.chat.completions.create(
+                    model=settings.model_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": sanitize(chunk)},
+                    ],
+                    temperature=0,
+                )
+            except APIError as retry_exc:
+                raise LLMError(
+                    f"LLM request failed for chunk {index + 1}/{len(chunks)} after content filter retry"
+                ) from retry_exc
+        except APIError as exc:
+            raise LLMError(f"LLM request failed for chunk {index + 1}/{len(chunks)}") from exc
 
         cleaned = str(response.choices[0].message.content)
         chunk_start = chunk[:50].replace("\n", " ")

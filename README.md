@@ -3,14 +3,14 @@
 Converts PDF files to MP3 audio via three steps:
 
 1. **Extract** — pulls text from a PDF using PyMuPDF, pages separated by form feeds
-2. **Process** — cleans the extracted text using Azure OpenAI GPT-4.1 (chunked to avoid truncation)
+2. **Process** — cleans the extracted text using an LLM (Azure OpenAI or Google Gemini, chunked to avoid truncation)
 3. **Synthesize** — converts the cleaned text to speech using Edge TTS
 
 ## Setup
 
 ```bash
 cp .env.example .env
-# Fill in AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY in .env
+# Set LLM_PROVIDER and fill in the corresponding credentials in .env
 uv sync
 ```
 
@@ -59,10 +59,12 @@ Infrastructure settings are overridden via environment variables (see `.env.exam
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `AZURE_OPENAI_ENDPOINT` | — | Azure OpenAI endpoint URL |
-| `AZURE_OPENAI_API_KEY` | — | Azure OpenAI API key |
-| `AZURE_DEPLOYMENT_NAME` | `exp-gpt-4.1` | Model deployment name |
-| `AZURE_OPENAI_API_VERSION` | `2024-12-01-preview` | API version |
+| `LLM_PROVIDER` | — | LLM provider (`azure_openai` or `google_gemini`) |
+| `MODEL_NAME` | — | Model or deployment name |
+| `OPENAI_API_VERSION` | — | API version (Azure OpenAI only) |
+| `AZURE_OPENAI_ENDPOINT` | — | Azure OpenAI endpoint URL (Azure only) |
+| `AZURE_OPENAI_API_KEY` | — | Azure OpenAI API key (Azure only) |
+| `GEMINI_API_KEY` | — | Google Gemini API key (Gemini only) |
 | `TTS_VOICE` | `de-DE-KatjaNeural` | Edge TTS voice |
 | `CHUNK_TOKEN_LIMIT` | `4000` | Max input tokens per LLM chunk |
 | `PDF_BASE_DIR` | `pdf` | Input PDF base directory |

@@ -1,6 +1,7 @@
 {
-    "azure_deployment_name": "",
-    "azure_api_version": "",
+    "llm_provider": "",
+    "model_name": "",
+    "api_version": "",
     "tts_voice": "",
     "chunk_token_limit": 4000,
     "pdf_base_dir": "pdf",

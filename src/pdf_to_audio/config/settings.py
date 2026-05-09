@@ -10,8 +10,9 @@ from pdf_to_audio.templates.template_loader import template_loader
 
 @dataclass
 class Settings:
-    azure_deployment_name: str
-    azure_api_version: str
+    llm_provider: str
+    model_name: str
+    api_version: str
     tts_voice: str
     chunk_token_limit: int
     skip_footnotes: bool
@@ -30,13 +31,15 @@ class Settings:
 
 
 def load_settings() -> Settings:
-    """Load settings from defaults.local.json and runtime.local.json, with env var overrides for infrastructure settings."""
+    """Load settings from defaults.local.json and runtime.local.json,
+    with env var overrides for infrastructure settings."""
     load_dotenv()
     defaults = template_loader.load_json_config("defaults.local")
     runtime = template_loader.load_json_config("runtime.local")
     return Settings(
-        azure_deployment_name=str(os.environ.get("AZURE_DEPLOYMENT_NAME", defaults["azure_deployment_name"])),
-        azure_api_version=str(os.environ.get("AZURE_OPENAI_API_VERSION", defaults["azure_api_version"])),
+        llm_provider=str(os.environ.get("LLM_PROVIDER", defaults["llm_provider"])),
+        model_name=str(os.environ.get("MODEL_NAME", defaults["model_name"])),
+        api_version=str(os.environ.get("OPENAI_API_VERSION", defaults["api_version"])),
         tts_voice=str(os.environ.get("TTS_VOICE", defaults["tts_voice"])),
         chunk_token_limit=int(os.environ.get("CHUNK_TOKEN_LIMIT", str(defaults["chunk_token_limit"]))),
         skip_footnotes=bool(runtime["skip_footnotes"]),
